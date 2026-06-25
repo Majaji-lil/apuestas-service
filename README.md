@@ -53,11 +53,14 @@ Requiere una PostgreSQL accesible con las tablas compartidas (`usuarios`,
 | /livez | Liveness | 200 siempre |
 | /readyz | Readiness | 200 BD ok / 503 sin BD |
 
+Puerto: 8005
+
 ## Despliegue en EKS
 
 ```bash
 kubectl apply -f k8s/
 kubectl get pods
+kubectl logs deploy/apuestas-service
 kubectl get hpa
 ```
 
