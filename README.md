@@ -34,3 +34,35 @@ Requiere una PostgreSQL accesible con las tablas compartidas (`usuarios`,
 3. **Workflow de CI/CD** (GitHub Actions) que construya la imagen, la publique en ECR y despliegue en **EKS**.
 4. **Manifiestos de Kubernetes** (Deployment + Service) con las probes apuntando a tus rutas de salud.
 5. **Pruebas de carga** que evidencien el correcto funcionamiento en EKS (escalado, disponibilidad).
+
+## Variables de entorno requeridas
+
+| Variable | Descripción |
+|----------|-------------|
+| DB_HOST | Host de PostgreSQL |
+| DB_PORT | Puerto de PostgreSQL (default 5432) |
+| DB_NAME | Nombre de la base de datos |
+| DB_USER | Usuario de la base de datos |
+| DB_PASSWORD | Contraseña (viene del Secret k8s) |
+| JWT_SECRET | Clave para validar tokens JWT |
+
+## Sondas de salud implementadas
+
+| Ruta | Tipo | Respuesta |
+|------|------|-----------|
+| /livez | Liveness | 200 siempre |
+| /readyz | Readiness | 200 BD ok / 503 sin BD |
+
+## Despliegue en EKS
+
+```bash
+kubectl apply -f k8s/
+kubectl get pods
+kubectl get hpa
+```
+
+## Troubleshooting
+
+- **CrashLoopBackOff:** revisar variables del Secret casino-secrets
+- **Readiness falla (503):** PostgreSQL no alcanzable, verificar casino-secrets
+- **Pipeline falla:** credenciales AWS Academy expiradas, actualizar GitHub Secrets
